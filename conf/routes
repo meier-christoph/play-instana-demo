@@ -1,0 +1,22 @@
+GET        /callback                         controllers.CallbackController.index()
+
+GET        /play/import                      controllers.PlayDefaultExecutionContextImportController.index()
+GET        /play/import/nested               controllers.PlayDefaultExecutionContextImportController.nested()
+
+GET        /play/inject                      controllers.PlayDefaultExecutionContextInjectController.index()
+GET        /play/inject/nested               controllers.PlayDefaultExecutionContextInjectController.nested()
+
+GET        /scala                            controllers.ScalaDefaultExecutionContextImportController.index()
+GET        /scala/nested                     controllers.ScalaDefaultExecutionContextImportController.nested()
+
+GET        /akka                             controllers.AkkaDefaultExecutionContextController.index()
+GET        /akka/nested                      controllers.AkkaDefaultExecutionContextController.nested()
+
+GET        /akka/fork-join                   controllers.AkkaCustomForkJoinExecutionContextController.index()
+GET        /akka/fork-join/nested            controllers.AkkaCustomForkJoinExecutionContextController.nested()
+
+GET        /akka/thread-pool                 controllers.AkkaCustomThreadPoolExecutionContextController.index()
+GET        /akka/thread-pool/nested          controllers.AkkaCustomThreadPoolExecutionContextController.nested()
+
+GET        /manual/thread-pool               controllers.ManualThreadPoolExecutionContextController.index()
+GET        /manual/thread-pool/nested        controllers.ManualThreadPoolExecutionContextController.nested()
