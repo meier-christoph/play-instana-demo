@@ -13,20 +13,20 @@ class ScalaDefaultExecutionContextImportController @Inject()
 (cfg: Configuration, ws: WSClient)
   extends Controller {
 
+  val url = cfg.getString("app.test-url").get
+
   // using the default scala context via import
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val port = cfg.getInt("http.port").getOrElse(9000)
-
   def index() = Action.async {
-    ws.url(s"http://127.0.0.1:$port/callback").get().map { resp =>
+    ws.url(url).get().map { resp =>
       Ok(resp.json)
     }
   }
 
   def nested() = Action.async {
-    ws.url(s"http://127.0.0.1:$port/callback").get().flatMap { resp =>
-      ws.url(s"http://127.0.0.1:$port/callback").get().map { resp =>
+    ws.url(url).get().flatMap { resp =>
+      ws.url(url).get().map { resp =>
         Ok(resp.json)
       }
     }

@@ -16,17 +16,17 @@ class PlayDefaultExecutionContextInjectController @Inject()
 (implicit ec: ExecutionContext) // using the default play context via inject
   extends Controller {
 
-  val port = cfg.getInt("http.port").getOrElse(9000)
+  val url = cfg.getString("app.test-url").get
 
   def index() = Action.async {
-    ws.url(s"http://127.0.0.1:$port/callback").get().map { resp =>
+    ws.url(url).get().map { resp =>
       Ok(resp.json)
     }
   }
 
   def nested() = Action.async {
-    ws.url(s"http://127.0.0.1:$port/callback").get().flatMap { resp =>
-      ws.url(s"http://127.0.0.1:$port/callback").get().map { resp =>
+    ws.url(url).get().flatMap { resp =>
+      ws.url(url).get().map { resp =>
         Ok(resp.json)
       }
     }
