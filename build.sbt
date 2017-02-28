@@ -12,3 +12,7 @@ libraryDependencies ++= Seq(
 
 // play
 routesGenerator := InjectedRoutesGenerator
+packageOptions += Package.ManifestAttributes(
+  "Implementation-Title" -> name.value,
+  "Implementation-Version" -> (version in ThisBuild).value
+)
