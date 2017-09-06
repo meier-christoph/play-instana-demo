@@ -7,14 +7,20 @@ import play.api.mvc.Controller
 
 import javax.inject.Inject
 
+import scala.concurrent.ExecutionContext
+
 /**
   * @author Christoph MEIER (TOP)
   */
-class AkkaCustomThreadPoolExecutionContextController @Inject()
-(val configuration: Configuration, val ws: WSClient, as: ActorSystem)
-  extends Controller
-    with HttpTraceController {
+class AkkaCustomThreadPoolExecutionContextController @Inject()(
+    val configuration: Configuration,
+    val ws: WSClient,
+    as: ActorSystem
+) extends Controller
+    with HttpTraceController
+    with MongoController {
 
-  val ec = as.dispatchers.lookup("app.custom-thread-pool-dispatcher")
-
+  override def prefix = "akka/thread-pool"
+  override val ec: ExecutionContext =
+    as.dispatchers.lookup("app.custom-thread-pool-dispatcher")
 }

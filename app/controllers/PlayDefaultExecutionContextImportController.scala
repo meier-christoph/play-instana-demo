@@ -6,14 +6,19 @@ import play.api.mvc.Controller
 
 import javax.inject.Inject
 
+import scala.concurrent.ExecutionContext
+
 /**
   * @author Christoph MEIER (TOP)
   */
-class PlayDefaultExecutionContextImportController @Inject()
-(val configuration: Configuration, val ws: WSClient)
-  extends Controller
-    with HttpTraceController {
+class PlayDefaultExecutionContextImportController @Inject()(
+    val configuration: Configuration,
+    val ws: WSClient
+) extends Controller
+    with HttpTraceController
+    with MongoController {
 
-  val ec = play.api.libs.concurrent.Execution.Implicits.defaultContext
-
+  override def prefix = "play/import"
+  override val ec: ExecutionContext =
+    play.api.libs.concurrent.Execution.Implicits.defaultContext
 }

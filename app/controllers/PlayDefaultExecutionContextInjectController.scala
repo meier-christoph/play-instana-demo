@@ -11,7 +11,13 @@ import scala.concurrent.ExecutionContext
 /**
   * @author Christoph MEIER (TOP)
   */
-class PlayDefaultExecutionContextInjectController @Inject()
-(val configuration: Configuration, val ws: WSClient, val ec: ExecutionContext)
-  extends Controller
+class PlayDefaultExecutionContextInjectController @Inject()(
+    val configuration: Configuration,
+    val ws: WSClient,
+    val ec: ExecutionContext
+) extends Controller
     with HttpTraceController
+    with MongoController {
+
+  override def prefix = "play/inject"
+}

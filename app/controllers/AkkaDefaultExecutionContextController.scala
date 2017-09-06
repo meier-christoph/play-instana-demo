@@ -7,14 +7,20 @@ import play.api.mvc.Controller
 
 import javax.inject.Inject
 
+import scala.concurrent.ExecutionContext
+
 /**
   * @author Christoph MEIER (TOP)
   */
-class AkkaDefaultExecutionContextController @Inject()
-(val configuration: Configuration, val ws: WSClient, as: ActorSystem)
-  extends Controller
-    with HttpTraceController {
+class AkkaDefaultExecutionContextController @Inject()(
+    val configuration: Configuration,
+    val ws: WSClient,
+    as: ActorSystem
+) extends Controller
+    with HttpTraceController
+    with MongoController {
 
-  val ec = as.dispatcher
-
+  override def prefix = "akka"
+  override val ec: ExecutionContext =
+    as.dispatcher
 }

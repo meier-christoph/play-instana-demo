@@ -12,13 +12,15 @@ import scala.concurrent.ExecutionContext
 /**
   * @author Christoph MEIER (TOP)
   */
-class ManualThreadPoolExecutionContextController @Inject()
-(val configuration: Configuration, val ws: WSClient)
-  extends Controller
-    with HttpTraceController {
+class ManualThreadPoolExecutionContextController @Inject()(
+    val configuration: Configuration,
+    val ws: WSClient
+) extends Controller
+    with HttpTraceController
+    with MongoController {
 
-  val ec = ExecutionContext.fromExecutorService(
+  override def prefix = "manual/thread-pool"
+  override val ec: ExecutionContext = ExecutionContext.fromExecutorService(
     Executors.newFixedThreadPool(10)
   )
-
 }
