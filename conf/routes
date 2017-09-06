@@ -1,3 +1,4 @@
+GET        /@/health                  controllers.CallbackController.index()
 GET        /callback                  controllers.CallbackController.index()
 
 ->         /play/import               controllers.PlayDefaultExecutionContextImportController
