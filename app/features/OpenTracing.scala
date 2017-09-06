@@ -5,7 +5,6 @@ import io.opentracing.propagation.{Format, TextMapExtractAdapter}
 import io.opentracing.{Span, Tracer}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.{Action, ActionBuilder, BodyParser, Request, Result, WrappedRequest}
-import play.api.routing.Router
 
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
@@ -33,10 +32,7 @@ object OpenTracingAction extends ActionBuilder[OpenTracingRequest] {
     )
 
     val method = request.method.toLowerCase
-    val route = request.tags
-      .getOrElse(Router.Tags.RoutePattern, "???")
-      .replaceAll("<[^>]*>", "")
-      .toLowerCase
+    val route = request.path.toLowerCase
 
     val span = tracer
       .buildSpan(s"/http/$method/$route")
