@@ -1,34 +1,28 @@
 #!/usr/bin/env bash
 
-port=9000
+host="${1:-http://127.0.0.1:9000}"
 opts="-v"
 
-curl "$opts" "http://127.0.0.1:$port/play/import"
-curl "$opts" "http://127.0.0.1:$port/play/import/future"
-curl "$opts" "http://127.0.0.1:$port/play/import/http"
+do_curl() {
+    prefix=$1
 
-curl "$opts" "http://127.0.0.1:$port/play/inject"
-curl "$opts" "http://127.0.0.1:$port/play/inject/future"
-curl "$opts" "http://127.0.0.1:$port/play/inject/http"
+    curl "$opts" "$host/$prefix/call"
+    curl "$opts" "$host/$prefix/future"
+    curl "$opts" "$host/$prefix/http"
+    curl "$opts" "$host/$prefix/find"
 
-curl "$opts" "http://127.0.0.1:$port/scala"
-curl "$opts" "http://127.0.0.1:$port/scala/future"
-curl "$opts" "http://127.0.0.1:$port/scala/http"
+    curl "$opts" "$host/$prefix/call?trace=true"
+    curl "$opts" "$host/$prefix/future?trace=true"
+    curl "$opts" "$host/$prefix/http?trace=true"
+    curl "$opts" "$host/$prefix/find?trace=true"
+}
 
-curl "$opts" "http://127.0.0.1:$port/akka"
-curl "$opts" "http://127.0.0.1:$port/akka/future"
-curl "$opts" "http://127.0.0.1:$port/akka/http"
-
-curl "$opts" "http://127.0.0.1:$port/akka/fork-join"
-curl "$opts" "http://127.0.0.1:$port/akka/fork-join/future"
-curl "$opts" "http://127.0.0.1:$port/akka/fork-join/http"
-
-curl "$opts" "http://127.0.0.1:$port/akka/thread-pool"
-curl "$opts" "http://127.0.0.1:$port/akka/thread-pool/future"
-curl "$opts" "http://127.0.0.1:$port/akka/thread-pool/http"
-
-curl "$opts" "http://127.0.0.1:$port/manual/thread-pool"
-curl "$opts" "http://127.0.0.1:$port/manual/thread-pool/future"
-curl "$opts" "http://127.0.0.1:$port/manual/thread-pool/http"
+do_curl "play/import"
+do_curl "play/inject"
+do_curl "scala"
+do_curl "akka"
+do_curl "akka/fork-join"
+do_curl "akka/thread-pool"
+do_curl "manual/thread-pool"
 
 exit 0

@@ -1,43 +1,9 @@
-GET         /callback                         controllers.CallbackController.index()
+GET        /callback                  controllers.CallbackController.index()
 
-GET         /play/import                      controllers.PlayDefaultExecutionContextImportController.index()
-GET         /play/import/future               controllers.PlayDefaultExecutionContextImportController.future()
-GET         /play/import/http                 controllers.PlayDefaultExecutionContextImportController.http()
-POST        /play/import/create               controllers.PlayDefaultExecutionContextImportController.create()
-GET         /play/import/find                 controllers.PlayDefaultExecutionContextImportController.find()
-
-GET         /play/inject                      controllers.PlayDefaultExecutionContextInjectController.index()
-GET         /play/inject/future               controllers.PlayDefaultExecutionContextInjectController.future()
-GET         /play/inject/http                 controllers.PlayDefaultExecutionContextInjectController.http()
-POST        /play/inject/create               controllers.PlayDefaultExecutionContextInjectController.create()
-GET         /play/inject/find                 controllers.PlayDefaultExecutionContextInjectController.find()
-
-GET         /scala                            controllers.ScalaDefaultExecutionContextImportController.index()
-GET         /scala/future                     controllers.ScalaDefaultExecutionContextImportController.future()
-GET         /scala/http                       controllers.ScalaDefaultExecutionContextImportController.http()
-POST        /scala/create                     controllers.ScalaDefaultExecutionContextImportController.create()
-GET         /scala/find                       controllers.ScalaDefaultExecutionContextImportController.find()
-
-GET         /akka                             controllers.AkkaDefaultExecutionContextController.index()
-GET         /akka/future                      controllers.AkkaDefaultExecutionContextController.future()
-GET         /akka/http                        controllers.AkkaDefaultExecutionContextController.http()
-POST        /akka/create                      controllers.AkkaDefaultExecutionContextController.create()
-GET         /akka/find                        controllers.AkkaDefaultExecutionContextController.find()
-
-GET         /akka/fork-join                   controllers.AkkaCustomForkJoinExecutionContextController.index()
-GET         /akka/fork-join/future            controllers.AkkaCustomForkJoinExecutionContextController.future()
-GET         /akka/fork-join/http              controllers.AkkaCustomForkJoinExecutionContextController.http()
-POST        /akka/fork-join/create            controllers.AkkaCustomForkJoinExecutionContextController.create()
-GET         /akka/fork-join/find              controllers.AkkaCustomForkJoinExecutionContextController.find()
-
-GET         /akka/thread-pool                 controllers.AkkaCustomThreadPoolExecutionContextController.index()
-GET         /akka/thread-pool/future          controllers.AkkaCustomThreadPoolExecutionContextController.future()
-GET         /akka/thread-pool/http            controllers.AkkaCustomThreadPoolExecutionContextController.http()
-POST        /akka/thread-pool/create          controllers.AkkaCustomThreadPoolExecutionContextController.create()
-GET         /akka/thread-pool/find            controllers.AkkaCustomThreadPoolExecutionContextController.find()
-
-GET         /manual/thread-pool               controllers.ManualThreadPoolExecutionContextController.index()
-GET         /manual/thread-pool/future        controllers.ManualThreadPoolExecutionContextController.future()
-GET         /manual/thread-pool/http          controllers.ManualThreadPoolExecutionContextController.http()
-POST        /manual/thread-pool/create        controllers.ManualThreadPoolExecutionContextController.create()
-GET         /manual/thread-pool/find          controllers.ManualThreadPoolExecutionContextController.find()
+->         /play/import               controllers.PlayDefaultExecutionContextImportController
+->         /play/inject               controllers.PlayDefaultExecutionContextInjectController
+->         /scala                     controllers.ScalaDefaultExecutionContextImportController
+->         /akka                      controllers.AkkaDefaultExecutionContextController
+->         /akka/fork-join            controllers.AkkaCustomForkJoinExecutionContextController
+->         /akka/thread-pool          controllers.AkkaCustomThreadPoolExecutionContextController
+->         /manual/thread-pool        controllers.ManualThreadPoolExecutionContextController

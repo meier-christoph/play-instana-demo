@@ -1,4 +1,4 @@
-package controllers
+package features
 
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.bson.codecs.configuration.CodecRegistry
@@ -7,21 +7,42 @@ import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.bson.{BsonDocument, BsonObjectId}
 import org.mongodb.scala.model.Sorts.ascending
 import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
-import play.api.Configuration
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json, OFormat}
 import play.api.mvc.{Action, AnyContent, Controller}
+import play.api.routing.Router
+import play.api.routing.sird._
+import play.api.{Configuration, Logger}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * @author Christoph MEIER (TOP)
   */
-trait MongoController {
+trait MongoBehavior {
   this: Controller =>
 
   def prefix: String
   def configuration: Configuration
   def ec: ExecutionContext
+  def mongoRoutes: Router.Routes = {
+    case GET(p"/find" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
+      OpenTracingAction.async { implicit request =>
+        Logger.debug(s"span -> ${request.span}")
+        find()(request)
+      }
+
+    case POST(p"/create" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
+      OpenTracingAction.async(parse.json) { implicit request =>
+        Logger.debug(s"span -> ${request.span}")
+        create()(request)
+      }
+
+    case GET(p"/find") =>
+      find()
+
+    case POST(p"/create") =>
+      create()
+  }
 
   val registry: CodecRegistry =
     fromRegistries(fromProviders(classOf[Client]), DEFAULT_CODEC_REGISTRY)

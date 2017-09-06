@@ -1,28 +1,55 @@
-package controllers
+package features
 
-import play.api.Configuration
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.WSClient
 import play.api.mvc.{Action, AnyContent, Controller}
+import play.api.routing.Router
+import play.api.routing.sird._
+import play.api.{Configuration, Logger}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * @author Christoph MEIER (TOP)
   */
-trait HttpTraceController {
+trait HttpBehavior {
   this: Controller =>
 
   def prefix: String
   def configuration: Configuration
   def ws: WSClient
   def ec: ExecutionContext
+  def httpRoutes: Router.Routes = {
+    case GET(p"/call" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
+      OpenTracingAction.async { implicit request =>
+        Logger.debug(s"span -> ${request.span}")
+        call()(request)
+      }
+
+    case GET(p"/future" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
+      OpenTracingAction.async { implicit request =>
+        Logger.debug(s"span -> ${request.span}")
+        future()(request)
+      }
+
+    case GET(p"/http" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
+      OpenTracingAction.async { implicit request =>
+        Logger.debug(s"span -> ${request.span}")
+        http()(request)
+      }
+
+    case GET(p"/call") => call()
+
+    case GET(p"/future") => future()
+
+    case GET(p"/http") => http()
+  }
 
   val url: String = configuration
     .getString("app.test-url")
     .getOrElse(throw new IllegalStateException("missing config"))
 
-  def index(): Action[AnyContent] = Action.async {
+  def call(): Action[AnyContent] = Action.async {
     // http get will run on internal ws client executor
     // while the map will be executed on the local executor
     // internal > local
