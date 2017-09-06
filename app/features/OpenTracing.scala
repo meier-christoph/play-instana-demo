@@ -32,7 +32,7 @@ object OpenTracingAction extends ActionBuilder[OpenTracingRequest] {
     )
 
     val method = request.method.toLowerCase
-    val route = request.path.toLowerCase
+    val route = request.path.toLowerCase.stripPrefix("/")
 
     val span = tracer
       .buildSpan(s"/http/$method/$route")

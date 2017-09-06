@@ -6,15 +6,15 @@ opts="-v"
 do_curl() {
     prefix=$1
 
-    curl "$opts" "$host/$prefix/call"
-    curl "$opts" "$host/$prefix/future"
-    curl "$opts" "$host/$prefix/http"
-    curl "$opts" "$host/$prefix/find"
+    do_run() {
+        curl "$opts" "$host/$prefix/call?$1"
+        curl "$opts" "$host/$prefix/future?$1"
+        curl "$opts" "$host/$prefix/http?$1"
+        curl "$opts" "$host/$prefix/find?$1"
+    }
 
-    curl "$opts" "$host/$prefix/call?trace=true"
-    curl "$opts" "$host/$prefix/future?trace=true"
-    curl "$opts" "$host/$prefix/http?trace=true"
-    curl "$opts" "$host/$prefix/find?trace=true"
+    do_run ""
+    do_run "trace=true"
 }
 
 do_curl "play/import"
