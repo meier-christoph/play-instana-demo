@@ -1,4 +1,4 @@
-package utils
+package org.example
 
 /**
   * @author Christoph MEIER (TOP)

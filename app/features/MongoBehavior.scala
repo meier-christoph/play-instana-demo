@@ -1,5 +1,6 @@
 package features
 
+import io.instana.sdk.annotated.InstanaAction
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
@@ -34,6 +35,16 @@ trait MongoBehavior {
     case POST(p"/create" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
       OpenTracingAction.async(parse.json) { implicit request =>
         Logger.debug(s"span -> ${request.span}")
+        create()(request)
+      }
+
+    case GET(p"/find" ? q_o"sdk=${bool(trace)}") if trace.contains(true) =>
+      InstanaAction.async { implicit request =>
+        find()(request)
+      }
+
+    case POST(p"/create" ? q_o"sdk=${bool(trace)}") if trace.contains(true) =>
+      InstanaAction.async(parse.json) { implicit request =>
         create()(request)
       }
 
