@@ -15,6 +15,7 @@ do_curl() {
 
     do_run ""
     do_run "trace=true"
+    do_run "sdk=true"
 }
 
 do_curl "play/import"
