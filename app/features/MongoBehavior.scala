@@ -1,6 +1,6 @@
 package features
 
-import io.instana.sdk.annotated.InstanaAction
+import io.instana.sdk.annotated.Instana
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
@@ -37,15 +37,6 @@ trait MongoBehavior {
         create()(request)
       }
 
-    case GET(p"/find" ? q_o"sdk=${bool(trace)}") if trace.contains(true) =>
-      InstanaAction.async { implicit request =>
-        find()(request)
-      }
-    case POST(p"/create" ? q_o"sdk=${bool(trace)}") if trace.contains(true) =>
-      InstanaAction.async(parse.json) { implicit request =>
-        create()(request)
-      }
-
     case GET(p"/find") =>
       find()
     case POST(p"/create") =>
@@ -71,15 +62,17 @@ trait MongoBehavior {
   val collection: MongoCollection[Client] = database.getCollection[Client]("clients")
 
   def find(): Action[AnyContent] = Action.async { req =>
-    collection
-      .find(BsonDocument()) // all
-      .sort(ascending(req.getQueryString("sort").getOrElse("_id")))
-      .skip(req.getQueryString("skip").getOrElse("0").toInt)
-      .limit(req.getQueryString("limit").getOrElse("10").toInt)
-      .toFuture()
-      .map { items =>
-        Ok(Json.toJson(items))
-      }(ec)
+    Instana {
+      collection
+        .find(BsonDocument()) // all
+        .sort(ascending(req.getQueryString("sort").getOrElse("_id")))
+        .skip(req.getQueryString("skip").getOrElse("0").toInt)
+        .limit(req.getQueryString("limit").getOrElse("10").toInt)
+        .toFuture()
+        .map { items =>
+          Ok(Json.toJson(items))
+        }(ec)
+    }
   }
 
   def create(): Action[JsValue] = Action.async(parse.json) { request =>

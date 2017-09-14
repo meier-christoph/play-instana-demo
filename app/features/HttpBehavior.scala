@@ -1,6 +1,5 @@
 package features
 
-import io.instana.sdk.annotated.InstanaAction
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.WSClient
 import play.api.mvc.{Action, AnyContent, Controller}
@@ -34,19 +33,6 @@ trait HttpBehavior {
     case GET(p"/http" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
       OpenTracingAction.async { implicit request =>
         Logger.debug(s"span -> ${request.span}")
-        http()(request)
-      }
-
-    case GET(p"/call" ? q_o"sdk=${bool(trace)}") if trace.contains(true) =>
-      InstanaAction.async { implicit request =>
-        call()(request)
-      }
-    case GET(p"/future" ? q_o"sdk=${bool(trace)}") if trace.contains(true) =>
-      InstanaAction.async { implicit request =>
-        future()(request)
-      }
-    case GET(p"/http" ? q_o"sdk=${bool(trace)}") if trace.contains(true) =>
-      InstanaAction.async { implicit request =>
         http()(request)
       }
 

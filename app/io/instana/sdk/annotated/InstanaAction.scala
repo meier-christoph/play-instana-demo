@@ -12,6 +12,10 @@ import scala.util.{Failure, Success, Try}
 /**
   * @author Christoph MEIER (TOP)
   */
+@deprecated(
+  "instrumentation by the agent runs after ActionBuilder meaning that if we do this here we get orphaned spans",
+  "1.0.0"
+)
 object InstanaAction extends ActionBuilder[Request] {
 
   override def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]): Future[Result] = {
