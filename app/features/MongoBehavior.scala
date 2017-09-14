@@ -31,7 +31,6 @@ trait MongoBehavior {
         Logger.debug(s"span -> ${request.span}")
         find()(request)
       }
-
     case POST(p"/create" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
       OpenTracingAction.async(parse.json) { implicit request =>
         Logger.debug(s"span -> ${request.span}")
@@ -42,7 +41,6 @@ trait MongoBehavior {
       InstanaAction.async { implicit request =>
         find()(request)
       }
-
     case POST(p"/create" ? q_o"sdk=${bool(trace)}") if trace.contains(true) =>
       InstanaAction.async(parse.json) { implicit request =>
         create()(request)
@@ -50,7 +48,6 @@ trait MongoBehavior {
 
     case GET(p"/find") =>
       find()
-
     case POST(p"/create") =>
       create()
   }

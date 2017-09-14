@@ -6,7 +6,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.{ActionBuilder, Request, Result}
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 /**
   * @author Christoph MEIER (TOP)
@@ -20,21 +20,17 @@ object InstanaAction extends ActionBuilder[Request] {
 
     start(name)
     val future = block(request)
-    future.onComplete {
-      case Success(resp) =>
-        success(resp)
-      case Failure(err) =>
-        failure(err)
-    }
+    future.onComplete(end)
     future
   }
 
-  @Start(value = "/http", captureArguments = true)
+  @Start(value = "http", captureArguments = true)
   def start(name: String): Unit = ()
 
-  @End(value = "/http", captureReturn = true)
-  def success(result: Result): String = result.header.status.toString
+  @End(value = "http", captureReturn = true)
+  def end(result: Try[Result]): String = result match {
+    case Success(r)   => r.header.status.toString
+    case Failure(err) => err.getMessage
+  }
 
-  @End(value = "/http", captureReturn = true)
-  def failure(err: Throwable): String = err.getMessage
 }

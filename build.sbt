@@ -26,7 +26,7 @@ sources in (Compile, doc) := Seq.empty
 publishArtifact in (Compile, packageDoc) := false
 
 // sbt-native-packager
-mainClass in Compile := Some("org.example.Launcher")
+mainClass in Compile := Some("io.instana.demo.Launcher")
 topLevelDirectory in Universal := None
 
 // sbt-buildinfo
