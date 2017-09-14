@@ -15,9 +15,7 @@ object Instana {
 
   def apply[A](block: => Future[A]): Future[A] = {
     start()
-    SpanSupport.annotate(Span.Type.INTERMEDIATE, "Text 1", "foobar")
-    SpanSupport.annotate(Span.Type.INTERMEDIATE, "Markdown 1", "_foobar_")
-    SpanSupport.annotate(Span.Type.INTERMEDIATE, "Html 1", "<b>foobar</b>")
+    SpanSupport.annotate(Span.Type.INTERMEDIATE, "demo", "Before", "lorem ipsum")
     val snapshot = ContextSupport.takeSnapshot()
     val future = block
     future.onComplete(r => complete(r, snapshot))
@@ -32,9 +30,8 @@ object Instana {
 
   def complete(result: Try[_], snapshot: Any): Unit = {
     ContextSupport.restoreSnapshot(snapshot)
-    SpanSupport.annotate(Span.Type.INTERMEDIATE, "Text 2", "foobar")
-    SpanSupport.annotate(Span.Type.INTERMEDIATE, "Markdown 2", "_foobar_")
-    SpanSupport.annotate(Span.Type.INTERMEDIATE, "Html 2", "<b>foobar</b>")
+    SpanSupport.annotate(Span.Type.INTERMEDIATE, "demo", "After", "foobar")
+    SpanSupport.annotate(Span.Type.INTERMEDIATE, "demo", "Result", result.toString)
     end()
   }
 }
