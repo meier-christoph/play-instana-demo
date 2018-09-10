@@ -61,6 +61,6 @@ class ErrorHandler @Inject()(sentry: SentryClient) extends HttpErrorHandler {
             .build()
         ).asJava)
         .build())
-    Future.successful(Results.BadRequest("todo"))
+    Future.successful(Results.InternalServerError("todo"))
   }
 }
