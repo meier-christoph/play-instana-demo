@@ -1,29 +1,20 @@
 package org.example.controllers
 
 import org.example.features.{HttpBehavior, MongoBehavior}
-import play.api.Configuration
-import play.api.libs.ws.WSClient
+import play.api.Play.current
+import play.api.libs.ws.{WS, WSClient}
 import play.api.mvc.Controller
-import play.api.routing.Router.Routes
-import play.api.routing.SimpleRouter
-
-import javax.inject.Inject
+import play.api.{Configuration, Play}
 
 import scala.concurrent.ExecutionContext
 
 /**
   * @author Christoph MEIER (TOP)
   */
-class PlayDefaultExecutionContextImportController @Inject()(
-    val configuration: Configuration,
-    val ws: WSClient
-) extends Controller
-    with SimpleRouter
-    with HttpBehavior
-    with MongoBehavior {
+object PlayDefaultExecutionContextImportController extends Controller with HttpBehavior with MongoBehavior {
 
   override def prefix = "play/import"
-  override def routes: Routes = httpRoutes orElse mongoRoutes
-  override val ec: ExecutionContext =
-    play.api.libs.concurrent.Execution.Implicits.defaultContext
+  override def configuration: Configuration = Play.configuration
+  override def ws: WSClient = WS.client
+  override val ec: ExecutionContext = play.api.libs.concurrent.Execution.Implicits.defaultContext
 }

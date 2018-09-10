@@ -1,12 +1,22 @@
-GET        /@/health                  org.example.controllers.CallbackController.index()
-GET        /callback                  org.example.controllers.CallbackController.index()
-GET        /crash                     org.example.controllers.CrashController.crash
-GET        /fatal                     org.example.controllers.CrashController.fatal
+GET         /@/health                         org.example.controllers.CallbackController.index()
+GET         /callback                         org.example.controllers.CallbackController.index()
+GET         /crash                            org.example.controllers.CrashController.crash
+GET         /fatal                            org.example.controllers.CrashController.fatal
 
-->         /play/import               org.example.controllers.PlayDefaultExecutionContextImportController
-->         /play/inject               org.example.controllers.PlayDefaultExecutionContextInjectController
-->         /scala                     org.example.controllers.ScalaDefaultExecutionContextImportController
-->         /akka                      org.example.controllers.AkkaDefaultExecutionContextController
-->         /akka/fork-join            org.example.controllers.AkkaCustomForkJoinExecutionContextController
-->         /akka/thread-pool          org.example.controllers.AkkaCustomThreadPoolExecutionContextController
-->         /manual/thread-pool        org.example.controllers.ManualThreadPoolExecutionContextController
+GET         /play/import/call                 org.example.controllers.PlayDefaultExecutionContextImportController.call()
+GET         /play/import/future               org.example.controllers.PlayDefaultExecutionContextImportController.future()
+GET         /play/import/http                 org.example.controllers.PlayDefaultExecutionContextImportController.http()
+GET         /play/import/find                 org.example.controllers.PlayDefaultExecutionContextImportController.find()
+POST        /play/import/create               org.example.controllers.PlayDefaultExecutionContextImportController.create()
+
+GET         /scala/call                       org.example.controllers.ScalaDefaultExecutionContextImportController.call()
+GET         /scala/future                     org.example.controllers.ScalaDefaultExecutionContextImportController.future()
+GET         /scala/http                       org.example.controllers.ScalaDefaultExecutionContextImportController.http()
+GET         /scala/find                       org.example.controllers.ScalaDefaultExecutionContextImportController.find()
+POST        /scala/create                     org.example.controllers.ScalaDefaultExecutionContextImportController.create()
+
+GET         /manual/thread-pool/call          org.example.controllers.ManualThreadPoolExecutionContextController.call()
+GET         /manual/thread-pool/future        org.example.controllers.ManualThreadPoolExecutionContextController.future()
+GET         /manual/thread-pool/http          org.example.controllers.ManualThreadPoolExecutionContextController.http()
+GET         /manual/thread-pool/find          org.example.controllers.ManualThreadPoolExecutionContextController.find()
+POST        /manual/thread-pool/create        org.example.controllers.ManualThreadPoolExecutionContextController.create()

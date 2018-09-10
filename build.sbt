@@ -20,8 +20,6 @@ libraryDependencies ++= Seq(
 )
 
 // play
-routesGenerator := InjectedRoutesGenerator
-packageOptions in PlayKeys.playJarSansExternalized := (packageOptions in (Compile, packageBin)).value
 
 // disable sources and doc
 sources in (Compile, doc) := Seq.empty

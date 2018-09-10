@@ -2,17 +2,14 @@ package org.example.features
 
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.bson.codecs.configuration.CodecRegistry
-import org.example.instana.{Instana, OpenTracingAction}
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.bson.{BsonDocument, BsonObjectId}
 import org.mongodb.scala.model.Sorts.ascending
 import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
-import play.api.libs.json.{JsError, JsSuccess, JsValue, Json, OFormat}
+import play.api.Configuration
+import play.api.libs.json.{Format, JsError, JsSuccess, JsValue, Json}
 import play.api.mvc.{Action, AnyContent, Controller}
-import play.api.routing.Router
-import play.api.routing.sird._
-import play.api.{Configuration, Logger}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -25,24 +22,6 @@ trait MongoBehavior {
   def prefix: String
   def configuration: Configuration
   def ec: ExecutionContext
-
-  def mongoRoutes: Router.Routes = {
-    case GET(p"/find" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
-      OpenTracingAction.async { implicit request =>
-        Logger.debug(s"span -> ${request.span}")
-        find()(request)
-      }
-    case POST(p"/create" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
-      OpenTracingAction.async(parse.json) { implicit request =>
-        Logger.debug(s"span -> ${request.span}")
-        create()(request)
-      }
-
-    case GET(p"/find") =>
-      find()
-    case POST(p"/create") =>
-      create()
-  }
 
   val registry: CodecRegistry =
     fromRegistries(fromProviders(classOf[Client]), DEFAULT_CODEC_REGISTRY)
@@ -63,17 +42,15 @@ trait MongoBehavior {
   val collection: MongoCollection[Client] = database.getCollection[Client]("clients")
 
   def find(): Action[AnyContent] = Action.async { req =>
-    Instana {
-      collection
-        .find(BsonDocument()) // all
-        .sort(ascending(req.getQueryString("sort").getOrElse("_id")))
-        .skip(req.getQueryString("skip").getOrElse("0").toInt)
-        .limit(req.getQueryString("limit").getOrElse("10").toInt)
-        .toFuture()
-        .map { items =>
-          Ok(Json.toJson(items))
-        }(ec)
-    }
+    collection
+      .find(BsonDocument()) // all
+      .sort(ascending(req.getQueryString("sort").getOrElse("_id")))
+      .skip(req.getQueryString("skip").getOrElse("0").toInt)
+      .limit(req.getQueryString("limit").getOrElse("10").toInt)
+      .toFuture()
+      .map { items =>
+        Ok(Json.toJson(items))
+      }(ec)
   }
 
   def create(): Action[JsValue] = Action.async(parse.json) { request =>
@@ -95,5 +72,5 @@ trait MongoBehavior {
 
 case class Client(name: String, age: Int)
 object Client {
-  implicit val json: OFormat[Client] = Json.format[Client]
+  implicit val json: Format[Client] = Json.format[Client]
 }

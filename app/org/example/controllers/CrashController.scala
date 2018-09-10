@@ -2,7 +2,7 @@ package org.example.controllers
 
 import play.api.mvc.{Action, AnyContent, Controller}
 
-class CrashController extends Controller {
+object CrashController extends Controller {
   def crash: Action[AnyContent] = Action {
     InternalServerError("crash")
   }

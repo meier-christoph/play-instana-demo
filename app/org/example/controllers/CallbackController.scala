@@ -8,7 +8,7 @@ import play.api.mvc.{Action, Controller}
   *
   * @author Christoph MEIER (TOP)
   */
-class CallbackController extends Controller {
+object CallbackController extends Controller {
 
   def index() = Action {
     Ok(Json.obj("status" -> "ok"))

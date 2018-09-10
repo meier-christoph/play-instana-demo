@@ -1,12 +1,9 @@
 package org.example.features
 
-import org.example.instana.OpenTracingAction
+import play.api.Configuration
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.WSClient
 import play.api.mvc.{Action, AnyContent, Controller}
-import play.api.routing.Router
-import play.api.routing.sird._
-import play.api.{Configuration, Logger}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -20,28 +17,6 @@ trait HttpBehavior {
   def configuration: Configuration
   def ws: WSClient
   def ec: ExecutionContext
-
-  def httpRoutes: Router.Routes = {
-    case GET(p"/call" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
-      OpenTracingAction.async { implicit request =>
-        Logger.debug(s"span -> ${request.span}")
-        call()(request)
-      }
-    case GET(p"/future" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
-      OpenTracingAction.async { implicit request =>
-        Logger.debug(s"span -> ${request.span}")
-        future()(request)
-      }
-    case GET(p"/http" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
-      OpenTracingAction.async { implicit request =>
-        Logger.debug(s"span -> ${request.span}")
-        http()(request)
-      }
-
-    case GET(p"/call")   => call()
-    case GET(p"/future") => future()
-    case GET(p"/http")   => http()
-  }
 
   val url: String = configuration
     .getString("app.test-url")
