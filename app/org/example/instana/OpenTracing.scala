@@ -1,4 +1,4 @@
-package features
+package org.example.instana
 
 import com.instana.opentracing.InstanaTracer
 import io.opentracing.propagation.{Format, TextMapExtractAdapter}
@@ -16,7 +16,6 @@ import scala.util.{Failure, Success}
 class OpenTracingRequest[A](val span: Span, req: Request[A]) extends WrappedRequest[A](req)
 
 case class OpenTracing[A](action: Action[A]) extends Action[A] {
-
   override def apply(request: Request[A]): Future[Result] = OpenTracingAction.invokeBlock(request, action.apply)
   override def parser: BodyParser[A] = action.parser
 }
@@ -40,7 +39,7 @@ object OpenTracingAction extends ActionBuilder[OpenTracingRequest] {
       .withTag("span.kind", "server")
       .withTag("http.url", request.uri.toString)
       .withTag("http.method", request.method)
-      .startManual()
+      .start()
 
     val future = block(new OpenTracingRequest(span, request))
     future.onComplete {

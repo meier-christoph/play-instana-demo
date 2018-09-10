@@ -1,11 +1,11 @@
-package controllers
+package org.example.controllers
 
-import features.{HttpBehavior, MongoBehavior}
+import org.example.features.{HttpBehavior, MongoBehavior}
 import play.api.Configuration
 import play.api.libs.ws.WSClient
 import play.api.mvc.Controller
 import play.api.routing.Router.Routes
-import play.api.routing.{Router, SimpleRouter}
+import play.api.routing.SimpleRouter
 
 import javax.inject.Inject
 

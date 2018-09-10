@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date %5level --- [%15.15thread] %-25.25logger{24} : %message%n%rootException</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+
+  <logger name="play" level="INFO"/>
+  <logger name="akka" level="INFO"/>
+  <logger name="application" level="DEBUG"/>
+  <logger name="org.example" level="DEBUG"/>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+</configuration>

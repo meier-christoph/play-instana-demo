@@ -13,9 +13,10 @@ libraryDependencies ++= Seq(
   ws,
   filters,
   cache,
-  "org.mongodb.scala" %% "mongo-scala-driver" % "2.1.0",
-  "com.instana" % "instana-java-sdk" % "1.0.2",
-  "com.instana" % "instana-java-opentracing" % "0.30.0"
+  "org.mongodb.scala" %% "mongo-scala-driver" % "2.4.1",
+  "com.instana" % "instana-java-sdk" % "1.1.0",
+  "com.instana" % "instana-java-opentracing" % "0.31.0",
+  "io.sentry" % "sentry" % "1.7.7"
 )
 
 // play
@@ -27,8 +28,11 @@ sources in (Compile, doc) := Seq.empty
 publishArtifact in (Compile, packageDoc) := false
 
 // sbt-native-packager
-mainClass in Compile := Some("io.instana.demo.Launcher")
+mainClass in Compile := Some("org.example.Launcher")
 topLevelDirectory in Universal := None
+
+// sbt-scalafmt
+scalafmtOnCompile := true
 
 // sbt-buildinfo
 buildInfoPackage := "utils"

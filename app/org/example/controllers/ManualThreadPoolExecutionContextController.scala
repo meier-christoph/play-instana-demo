@@ -1,13 +1,13 @@
-package controllers
+package org.example.controllers
 
-import akka.actor.ActorSystem
-import features.{HttpBehavior, MongoBehavior}
+import org.example.features.{HttpBehavior, MongoBehavior}
 import play.api.Configuration
 import play.api.libs.ws.WSClient
 import play.api.mvc.Controller
 import play.api.routing.Router.Routes
-import play.api.routing.{Router, SimpleRouter}
+import play.api.routing.SimpleRouter
 
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 import scala.concurrent.ExecutionContext
@@ -15,17 +15,17 @@ import scala.concurrent.ExecutionContext
 /**
   * @author Christoph MEIER (TOP)
   */
-class AkkaCustomThreadPoolExecutionContextController @Inject()(
+class ManualThreadPoolExecutionContextController @Inject()(
     val configuration: Configuration,
-    val ws: WSClient,
-    as: ActorSystem
+    val ws: WSClient
 ) extends Controller
     with SimpleRouter
     with HttpBehavior
     with MongoBehavior {
 
-  override def prefix = "akka/thread-pool"
+  override def prefix = "manual/thread-pool"
   override def routes: Routes = httpRoutes orElse mongoRoutes
-  override val ec: ExecutionContext =
-    as.dispatchers.lookup("app.custom-thread-pool-dispatcher")
+  override val ec: ExecutionContext = ExecutionContext.fromExecutorService(
+    Executors.newFixedThreadPool(10)
+  )
 }

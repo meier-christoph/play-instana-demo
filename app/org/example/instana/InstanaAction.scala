@@ -1,5 +1,4 @@
-// using a package name which should not collide with existing code
-package io.instana.sdk.annotated
+package org.example.instana
 
 import com.instana.sdk.annotation.Span.{End, Start}
 import com.instana.sdk.support.ContextSupport

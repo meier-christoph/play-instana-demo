@@ -1,4 +1,4 @@
-package io.instana.sdk.annotated
+package org.example.instana
 
 import com.instana.sdk.annotation.Span
 import com.instana.sdk.annotation.Span.{End, Start}

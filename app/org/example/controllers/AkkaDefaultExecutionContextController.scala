@@ -1,7 +1,7 @@
-package controllers
+package org.example.controllers
 
 import akka.actor.ActorSystem
-import features.{HttpBehavior, MongoBehavior}
+import org.example.features.{HttpBehavior, MongoBehavior}
 import play.api.Configuration
 import play.api.libs.ws.WSClient
 import play.api.mvc.Controller
@@ -15,7 +15,7 @@ import scala.concurrent.ExecutionContext
 /**
   * @author Christoph MEIER (TOP)
   */
-class AkkaCustomForkJoinExecutionContextController @Inject()(
+class AkkaDefaultExecutionContextController @Inject()(
     val configuration: Configuration,
     val ws: WSClient,
     as: ActorSystem
@@ -24,8 +24,8 @@ class AkkaCustomForkJoinExecutionContextController @Inject()(
     with HttpBehavior
     with MongoBehavior {
 
-  override def prefix = "akka/fork-join"
+  override def prefix = "akka"
   override def routes: Routes = httpRoutes orElse mongoRoutes
   override val ec: ExecutionContext =
-    as.dispatchers.lookup("app.custom-fork-join-dispatcher")
+    as.dispatcher
 }

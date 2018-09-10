@@ -1,8 +1,8 @@
-package features
+package org.example.features
 
-import io.instana.sdk.annotated.Instana
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.bson.codecs.configuration.CodecRegistry
+import org.example.instana.{Instana, OpenTracingAction}
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.bson.{BsonDocument, BsonObjectId}
@@ -25,6 +25,7 @@ trait MongoBehavior {
   def prefix: String
   def configuration: Configuration
   def ec: ExecutionContext
+
   def mongoRoutes: Router.Routes = {
     case GET(p"/find" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
       OpenTracingAction.async { implicit request =>
@@ -94,6 +95,5 @@ trait MongoBehavior {
 
 case class Client(name: String, age: Int)
 object Client {
-
   implicit val json: OFormat[Client] = Json.format[Client]
 }

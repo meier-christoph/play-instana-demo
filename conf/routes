@@ -1,10 +1,12 @@
-GET        /@/health                  controllers.CallbackController.index()
-GET        /callback                  controllers.CallbackController.index()
+GET        /@/health                  org.example.controllers.CallbackController.index()
+GET        /callback                  org.example.controllers.CallbackController.index()
+GET        /crash                     org.example.controllers.CrashController.crash
+GET        /fatal                     org.example.controllers.CrashController.fatal
 
-->         /play/import               controllers.PlayDefaultExecutionContextImportController
-->         /play/inject               controllers.PlayDefaultExecutionContextInjectController
-->         /scala                     controllers.ScalaDefaultExecutionContextImportController
-->         /akka                      controllers.AkkaDefaultExecutionContextController
-->         /akka/fork-join            controllers.AkkaCustomForkJoinExecutionContextController
-->         /akka/thread-pool          controllers.AkkaCustomThreadPoolExecutionContextController
-->         /manual/thread-pool        controllers.ManualThreadPoolExecutionContextController
+->         /play/import               org.example.controllers.PlayDefaultExecutionContextImportController
+->         /play/inject               org.example.controllers.PlayDefaultExecutionContextInjectController
+->         /scala                     org.example.controllers.ScalaDefaultExecutionContextImportController
+->         /akka                      org.example.controllers.AkkaDefaultExecutionContextController
+->         /akka/fork-join            org.example.controllers.AkkaCustomForkJoinExecutionContextController
+->         /akka/thread-pool          org.example.controllers.AkkaCustomThreadPoolExecutionContextController
+->         /manual/thread-pool        org.example.controllers.ManualThreadPoolExecutionContextController

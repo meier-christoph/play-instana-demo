@@ -1,12 +1,11 @@
-package controllers
+package org.example.controllers
 
-import akka.actor.ActorSystem
-import features.{HttpBehavior, MongoBehavior}
+import org.example.features.{HttpBehavior, MongoBehavior}
 import play.api.Configuration
 import play.api.libs.ws.WSClient
 import play.api.mvc.Controller
 import play.api.routing.Router.Routes
-import play.api.routing.{Router, SimpleRouter}
+import play.api.routing.SimpleRouter
 
 import javax.inject.Inject
 
@@ -15,17 +14,16 @@ import scala.concurrent.ExecutionContext
 /**
   * @author Christoph MEIER (TOP)
   */
-class AkkaDefaultExecutionContextController @Inject()(
+class PlayDefaultExecutionContextImportController @Inject()(
     val configuration: Configuration,
-    val ws: WSClient,
-    as: ActorSystem
+    val ws: WSClient
 ) extends Controller
     with SimpleRouter
     with HttpBehavior
     with MongoBehavior {
 
-  override def prefix = "akka"
+  override def prefix = "play/import"
   override def routes: Routes = httpRoutes orElse mongoRoutes
   override val ec: ExecutionContext =
-    as.dispatcher
+    play.api.libs.concurrent.Execution.Implicits.defaultContext
 }

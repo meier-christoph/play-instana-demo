@@ -1,5 +1,6 @@
-package features
+package org.example.features
 
+import org.example.instana.OpenTracingAction
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.WSClient
 import play.api.mvc.{Action, AnyContent, Controller}
@@ -19,6 +20,7 @@ trait HttpBehavior {
   def configuration: Configuration
   def ws: WSClient
   def ec: ExecutionContext
+
   def httpRoutes: Router.Routes = {
     case GET(p"/call" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
       OpenTracingAction.async { implicit request =>

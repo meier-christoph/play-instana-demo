@@ -1,4 +1,4 @@
-package io.instana.demo
+package org.example
 
 /**
   * @author Christoph MEIER (TOP)
