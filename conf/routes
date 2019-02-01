@@ -1,5 +1,5 @@
-GET        /@/health                  org.example.controllers.CallbackController.index()
-GET        /callback                  org.example.controllers.CallbackController.index()
+GET        /@/health                  org.example.controllers.HealthCheck.health()
+GET        /work                      org.example.controllers.SimulateWorkController.work()
 GET        /crash                     org.example.controllers.CrashController.crash
 GET        /fatal                     org.example.controllers.CrashController.fatal
 

@@ -1,99 +1,91 @@
 package org.example.features
 
-import org.example.instana.OpenTracingAction
-import play.api.libs.json.{JsObject, Json}
+import akka.stream.Materializer
+import akka.stream.scaladsl.Sink
+import akka.util.ByteString
+import play.api.Configuration
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSClient
-import play.api.mvc.{Action, AnyContent, Controller}
+import play.api.mvc.{Action, AnyContent, Controller, RequestHeader}
 import play.api.routing.Router
 import play.api.routing.sird._
-import play.api.{Configuration, Logger}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * @author Christoph MEIER (TOP)
-  */
 trait HttpBehavior {
   this: Controller =>
 
   def prefix: String
   def configuration: Configuration
   def ws: WSClient
-  def ec: ExecutionContext
+  implicit def ec: ExecutionContext
+  implicit def mat: Materializer
 
   def httpRoutes: Router.Routes = {
-    case GET(p"/call" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
-      OpenTracingAction.async { implicit request =>
-        Logger.debug(s"span -> ${request.span}")
-        call()(request)
-      }
-    case GET(p"/future" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
-      OpenTracingAction.async { implicit request =>
-        Logger.debug(s"span -> ${request.span}")
-        future()(request)
-      }
-    case GET(p"/http" ? q_o"trace=${bool(trace)}") if trace.contains(true) =>
-      OpenTracingAction.async { implicit request =>
-        Logger.debug(s"span -> ${request.span}")
-        http()(request)
-      }
-
-    case GET(p"/call")   => call()
-    case GET(p"/future") => future()
-    case GET(p"/http")   => http()
+    case GET(p"/http/strict")   => strict()
+    case GET(p"/http/stream")   => stream()
+    case GET(p"/http/chained")  => chained()
+    case GET(p"/http/parallel") => parallel()
+    case GET(p"/http/traverse") => traverse()
+    case GET(p"/http/sequence") => sequence()
   }
 
-  val url: String = configuration
-    .getString("app.test-url")
-    .getOrElse(throw new IllegalStateException("missing config"))
+  def url(implicit req: RequestHeader): String = {
+    s"http://${req.host}/work"
+  }
 
-  def call(): Action[AnyContent] = Action.async {
-    // http get will run on internal ws client executor
-    // while the map will be executed on the local executor
-    // internal > local
+  def call(implicit req: RequestHeader): Future[JsValue] = {
     ws.url(url)
       .get()
-      .map { resp =>
-        Ok(resp.json)
-      }(ec)
+      .map(_.json)
   }
 
-  def future(): Action[AnyContent] = Action.async {
-    // future will use local executor
-    // the http calls will use the internal ws client executor
-    // but the map and flatMap will use the local executor again
-    // local > internal > local > local > local > internal > local
-    Future {
-      ws.url(url)
-        .get()
-        .map { resp =>
-          resp // using map to force usage of local executor
-        }(ec)
-    }(ec).flatMap { t =>
-      // flatten the responses on local executor (twice)
-      t.flatMap { resp =>
-        ws.url(url)
-          .get()
-          .map { res => // use internal executor again
-            // but force local executor on map
-            Ok(Json.obj("call" -> resp.json) ++ res.json.as[JsObject])
-          }(ec)
-      }(ec)
-    }(ec)
+  def strict(): Action[AnyContent] = Action.async { implicit req =>
+    call.map(Ok(_))
   }
 
-  def http(): Action[AnyContent] = Action.async {
-    // map and flatMap use local executor
-    // http calls use the internal ws client executor
-    // internal > local > internal > local
+  def stream(): Action[AnyContent] = Action.async { implicit req =>
     ws.url(url)
-      .get()
-      .flatMap { resp =>
-        ws.url(url)
-          .get()
-          .map { res =>
-            Ok(Json.obj("call" -> resp.json) ++ res.json.as[JsObject])
-          }(ec)
-      }(ec)
+      .stream()
+      .flatMap {
+        _.body.runWith(Sink.fold[Long, ByteString](0L) { (total, bytes) => total + bytes.length
+        })
+      }
+      .map(l => Json.obj("length" -> l))
+      .map(Ok(_))
+  }
+
+  def chained(): Action[AnyContent] = Action.async { implicit req =>
+    // should see 3 calls one after the other (staircase)
+    for {
+      r1 <- call
+      r2 <- call
+      r3 <- call
+    } yield {
+      Ok(Json.obj("r1" -> r1, "r2" -> r2, "r3" -> r3))
+    }
+  }
+
+  def traverse(): Action[AnyContent] = Action.async { implicit req =>
+    Future.traverse[Int, JsValue, Seq](1 to 10)(_ => call).map(l => Ok(Json.obj("list" -> l)))
+  }
+
+  def parallel(): Action[AnyContent] = Action.async { implicit req =>
+    // should see 3 calls in parallel
+    val f1 = call
+    val f2 = call
+    val f3 = call
+    for {
+      r1 <- f1
+      r2 <- f2
+      r3 <- f3
+    } yield {
+      Ok(Json.obj("r1" -> r1, "r2" -> r2, "r3" -> r3))
+    }
+  }
+
+  def sequence(): Action[AnyContent] = Action.async { implicit req =>
+    val f = (1 to 10).map(_ => call)
+    Future.sequence(f).map(l => Ok(Json.obj("list" -> l)))
   }
 }

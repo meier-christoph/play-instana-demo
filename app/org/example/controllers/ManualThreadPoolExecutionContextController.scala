@@ -1,5 +1,10 @@
 package org.example.controllers
 
+import java.util.concurrent.Executors
+
+import akka.actor.ActorSystem
+import akka.stream.Materializer
+import javax.inject.Inject
 import org.example.features.{HttpBehavior, MongoBehavior}
 import play.api.Configuration
 import play.api.libs.ws.WSClient
@@ -7,18 +12,14 @@ import play.api.mvc.Controller
 import play.api.routing.Router.Routes
 import play.api.routing.SimpleRouter
 
-import java.util.concurrent.Executors
-import javax.inject.Inject
-
 import scala.concurrent.ExecutionContext
 
-/**
-  * @author Christoph MEIER (TOP)
-  */
 class ManualThreadPoolExecutionContextController @Inject()(
     val configuration: Configuration,
-    val ws: WSClient
-) extends Controller
+    val ws: WSClient,
+    as: ActorSystem
+)(implicit val mat: Materializer)
+    extends Controller
     with SimpleRouter
     with HttpBehavior
     with MongoBehavior {
