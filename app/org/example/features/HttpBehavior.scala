@@ -31,7 +31,7 @@ trait HttpBehavior {
   }
 
   def url(implicit req: RequestHeader): String = {
-    s"http://${req.host}/work"
+    req.getQueryString("url").getOrElse(s"http://${req.host}/work")
   }
 
   def call(implicit req: RequestHeader): Future[JsValue] = {

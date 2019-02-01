@@ -13,10 +13,7 @@ libraryDependencies ++= Seq(
   ws,
   filters,
   cache,
-  "org.mongodb.scala" %% "mongo-scala-driver" % "2.4.1",
-  "com.instana" % "instana-java-sdk" % "1.1.0",
-  "com.instana" % "instana-java-opentracing" % "0.31.0",
-  "io.sentry" % "sentry" % "1.7.17"
+  "org.mongodb.scala" %% "mongo-scala-driver" % "2.5.0"
 )
 
 // play
