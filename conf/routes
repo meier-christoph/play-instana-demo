@@ -1,12 +1,7 @@
-GET        /@/health                  org.example.controllers.HealthCheck.health()
-GET        /work                      org.example.controllers.SimulateWorkController.work()
-GET        /crash                     org.example.controllers.CrashController.crash
-GET        /fatal                     org.example.controllers.CrashController.fatal
+GET        /@/health                                     org.example.controllers.HealthCheck.health()
+GET        /work                                         org.example.controllers.SimulateWorkController.work0()
+GET        /work/with/multiple/levels                    org.example.controllers.SimulateWorkController.work0()
+GET        /work/with/:params/of/different/:types        org.example.controllers.SimulateWorkController.work2(params: String, types: Int)
+GET        /work/with/$patterns<[a-z]+>                  org.example.controllers.SimulateWorkController.work1(patterns: String)
 
-->         /play/import               org.example.controllers.PlayDefaultExecutionContextImportController
-->         /play/inject               org.example.controllers.PlayDefaultExecutionContextInjectController
-->         /scala                     org.example.controllers.ScalaDefaultExecutionContextImportController
-->         /akka                      org.example.controllers.AkkaDefaultExecutionContextController
-->         /akka/fork-join            org.example.controllers.AkkaCustomForkJoinExecutionContextController
-->         /akka/thread-pool          org.example.controllers.AkkaCustomThreadPoolExecutionContextController
-->         /manual/thread-pool        org.example.controllers.ManualThreadPoolExecutionContextController
+->         /sird                                         org.example.controllers.MySimpleRouter

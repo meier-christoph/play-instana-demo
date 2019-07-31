@@ -10,10 +10,7 @@ lazy val root = (project in file("."))
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-encoding", "UTF-8")
 
 libraryDependencies ++= Seq(
-  ws,
-  filters,
-  cache,
-  "org.mongodb.scala" %% "mongo-scala-driver" % "2.5.0"
+  filters
 )
 
 // play
